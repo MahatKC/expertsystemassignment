@@ -13,7 +13,7 @@ class RobotCrossStreet(KnowledgeEngine):
 
     @Rule(Light(color='red'))
     def red_light(self):
-        print("BAO")
+        print("BAum")
 
     @Rule(AS.light << Light(color=L('yellow') | L('blinking-yellow')))
     def cautious(self, light):
