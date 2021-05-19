@@ -2,12 +2,6 @@ from random import choice
 import schema
 from experta import *
 
-"""
-class Light(Fact):
-    #Info about the traffic light.
-    pass
-"""
-
 class Demanda(Fact):
     kwh_demand = Field(lambda kwh_demand: isinstance(kwh_demand, int) and kwh_demand>=0, mandatory=True)
 
@@ -54,9 +48,23 @@ class RobotCrossStreet(KnowledgeEngine):
     def cautious(self, light):
         print("Be cautious because light is", light["color"])
 """
-"""
-engine = RobotCrossStreet()
+class AnaliseViabilidade(KnowledgeEngine):
+    @Rule(Demanda(kwh_demand=P(lambda x: x>500)),
+            Classe_Consumo(classe_consumo=L(0)|L(1)),
+            Radiacao(radiacao=P(lambda y: y>5)))
+    def pikachu(self):
+        print("vai curintcha")
+
+    @Rule(Demanda(kwh_demand=P(lambda x: x<500)),
+            Classe_Consumo(classe_consumo=L(0)|L(1)),
+            Radiacao(radiacao=P(lambda y: y>5)))
+    def charmander(self):
+        print("vai parmera")
+
+
+engine = AnaliseViabilidade()
 engine.reset()
-engine.declare(Light(color=choice(['red'])))
+engine.declare(Demanda(kwh_demand=15))
+engine.declare(Classe_Consumo(classe_consumo=0))
+engine.declare(Radiacao(radiacao=13))
 engine.run()
-"""
