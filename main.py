@@ -1,70 +1,78 @@
-from random import choice
-import schema
+#trabalho por Leonardo Vanzin, Mateus Karvat e Roberta Aparecida
+
+#inicialmente, são importadas as bibliotecas necessárias
 from experta import *
 
-class Demanda(Fact):
-    kwh_demand = Field(lambda kwh_demand: isinstance(kwh_demand, int) and kwh_demand>=0, mandatory=True)
+#então, criaremos os fatos utilizado para as regras do SE
+#no Experta, cada fato é um classe individual com parâmetros próprios
+#criaremos um fato distinto para cada possível fonte energética de nosso problema
+class Solar(Fact):
+    # ao declarar uma variável, pode-se restringir seu tipo, seu valor, e definir se ela é
+    # obrigatória ou não
+    # aqui, temos um variável float obrigatória cujo valor em módulo deve ser menor que 90
+    latitude = Field(lambda longitude:
+                        isinstance(longitude, float) and abs(longitude)<=90, mandatory=True)
 
-class Classe_Consumo(Fact):
-    #0 -> residencial
-    #1 -> rural
-    #2 -> industrial
-    classe_consumo = Field(lambda classe_consumo: 
-                        isinstance(classe_consumo, int) and classe_consumo in (0,1,2), mandatory=True)
+class Geotermica(Fact):
+    # aqui, a declaração da variável não tem restrição de valores, logo sua declaração é mais simples
+    # e não requer o uso e uma função lambda
+    temperatura_subterranea = Field(float, mandatory=True) #em graus celsius
 
-class Radiacao(Fact):
-    radiacao = Field(int, mandatory=True)
+class Maremotriz(Fact):
+    # para esta classe, a diferenca_mare só será relevante caso o usuário esteja próximo do mar
+    # logo, este parâmetro não é obrigatório e a inserção de um fato que não o contenha na base
+    # de conhecimento será aceita
+    diferenca_mare = Field(lambda diferenca_mare:
+                            isinstance(diferenca_mare, float) and diferenca_mare>=0) #em metros
+    proximidade_mar = Field(float, mandatory=True) #em km
 
-class Longitude(Fact):
-    longitude = Field(lambda longitude:
-                        isinstance(longitude, float) and longitude>=-90 and longitude<=90, mandatory=True)
+class Eolica(Fact):
+    velocidade_vento = Field(lambda velocidade_vento: isinstance(velocidade_vento, float)
+                                and velocidade_vento>=0, mandatory=True) #em km/h
 
-class Altitude(Fact):
-    altitude = Field(lambda altitude:
-                        isinstance(altitude, int) and altitude>=-500 and altitude<=9000, mandatory=True)
+class Hidrica(Fact):
+    area_reservatorio = Field(lambda area_reservatorio:
+                            isinstance(area_reservatorio, float) and area_reservatorio>=0, 
+                            mandatory=True) #em km²
 
-class Area_Disponivel(Fact):
-    area = Field(lambda area: isinstance(area, int) and area>=0, mandatory=True)
-
-class Disponbilidade_Hidrica(Fact):
-    disponibilidade = Field(int, mandatory=True)
-
-class Temperatura_Subterranea(Fact):
-    temperatura = Field(float, mandatory=True)
-
-class Fontes_Quentes(Fact):
-    fontes_quentes = Field(bool, mandatory=True)
-"""
-class RobotCrossStreet(KnowledgeEngine):
-    @Rule(Light(color='green'))
-    def green_light(self):
-        print("Walk")
-
-    @Rule(Light(color='red'))
-    def red_light(self):
-        print("BAum")
-
-    @Rule(AS.light << Light(color=L('yellow') | L('blinking-yellow')))
-    def cautious(self, light):
-        print("Be cautious because light is", light["color"])
-"""
+# o motor de inferência deve ser declarado como uma classe própria, dentro da qual serão definidas
+# as regras
 class AnaliseViabilidade(KnowledgeEngine):
-    @Rule(Demanda(kwh_demand=P(lambda x: x>500)),
-            Classe_Consumo(classe_consumo=L(0)|L(1)),
-            Radiacao(radiacao=P(lambda y: y>5)))
-    def pikachu(self):
-        print("vai curintcha")
+    
+    # cada regra usa um annotation @rule, dentro do qual os possíveis valores dos fatos são especificados
+    # acessamos o fato desejado e determinamos uma função lambda para tal valor, indicando seus possíveis valores
+    # quando uma regra acessa mais de um parâmetro, ela só será validada caso todas as restrições sejam atendidas
+    # neste caso, a função regra_maremotriz só será executada caso o parâmetro diferenca_mare for maior ou igual a 7 e
+    # o parametro promixidade_mar menor ou igual a 2. do contrário, nada ocorrerá
+    @Rule(Maremotriz(diferenca_mare=P(lambda d: d>=7),proximidade_mar=P(lambda p: p<=2)))
+    def regra_maremotriz(self):
+        print("Maremotriz é top")
 
-    @Rule(Demanda(kwh_demand=P(lambda x: x<500)),
-            Classe_Consumo(classe_consumo=L(0)|L(1)),
-            Radiacao(radiacao=P(lambda y: y>5)))
-    def charmander(self):
-        print("vai parmera")
+    @Rule(Eolica(velocidade_vento=P(lambda v: v>25)))
+    def regra_eolica(self):
+        print("Eolica é top")
 
+    @Rule(Solar(latitude=P(lambda y: abs(y)<50)))
+    def regra_solar(self):
+        print("Solar é top")
 
+    @Rule(Geotermica(temperatura_subterranea=P(lambda t: t>150)))
+    def regra_geotermica(self):
+        print("Geotermica é top")
+
+    @Rule(Hidrica(area_reservatorio=P(lambda a: a>3.0)))
+    def regra_hidrica(self):
+        print("Hidrica é top")
+
+# após declarar o motor, as regras e os fatos, é preciso instanciá-los
 engine = AnaliseViabilidade()
+# o motor é reinicializado para aceitar novos fatos (limpando quaisquer valores existentes na cache após uma execução anterior)
 engine.reset()
-engine.declare(Demanda(kwh_demand=15))
-engine.declare(Classe_Consumo(classe_consumo=0))
-engine.declare(Radiacao(radiacao=13))
+# cada um dos fatos é declarado individualmente, podendo-se passar múltiplos parâmetros para um mesmo fato de uma vez só
+engine.declare(Maremotriz(diferenca_mare=8.0,proximidade_mar=0.08))
+engine.declare(Eolica(velocidade_vento=30.0))
+engine.declare(Solar(latitude=-10.0))
+engine.declare(Hidrica(area_reservatorio=10.0))
+engine.declare(Geotermica(temperatura_subterranea=200.0))
+# por fim, o motor é executado
 engine.run()
