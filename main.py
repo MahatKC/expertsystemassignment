@@ -4,9 +4,7 @@ from experta import *
 
 class Solar(Fact):
     latitude = Field(lambda longitude:
-                        isinstance(longitude, float) and longitude>=-90 and longitude<=90, mandatory=True)
-    altitude = Field(lambda altitude:
-                        isinstance(altitude, int) and altitude>=-500 and altitude<=9000, mandatory=True)
+                        isinstance(longitude, float) and abs(longitude)<=90, mandatory=True)
 
 class Geotermica(Fact):
     temperatura_subtarranea = Field(float, mandatory=True)
