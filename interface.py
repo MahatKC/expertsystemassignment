@@ -1,3 +1,4 @@
+#trabalho por Leonardo Vanzin, Mateus Karvat e Roberta Aparecida
 from tkinter.constants import CENTER
 from PySimpleGUI import PySimpleGUI as sg
 

@@ -2,6 +2,16 @@
 
 #inicialmente, são importadas as bibliotecas necessárias
 from experta import *
+import interface
+
+valores_convertidos = {
+    'proximidadeMar': float(interface.valores['proximidadeMar']),
+    'desnivel': float(interface.valores['desnivel']),
+    'velocidadeVento': float(interface.valores['velocidadeVento']),
+    'latitude': float(interface.valores['latitude']),
+    'area': float(interface.valores['area']),
+    'temperaturaInterna': float(interface.valores['temperaturaInterna'])
+}
 
 #então, criaremos os fatos utilizado para as regras do SE
 #no Experta, cada fato é um classe individual com parâmetros próprios
@@ -69,10 +79,11 @@ engine = AnaliseViabilidade()
 # o motor é reinicializado para aceitar novos fatos (limpando quaisquer valores existentes na cache após uma execução anterior)
 engine.reset()
 # cada um dos fatos é declarado individualmente, podendo-se passar múltiplos parâmetros para um mesmo fato de uma vez só
-engine.declare(Maremotriz(diferenca_mare=8.0,proximidade_mar=0.08))
-engine.declare(Eolica(velocidade_vento=30.0))
-engine.declare(Solar(latitude=-10.0))
-engine.declare(Hidrica(area_reservatorio=10.0))
-engine.declare(Geotermica(temperatura_subterranea=200.0))
+engine.declare(Maremotriz(diferenca_mare=valores_convertidos['desnivel'],
+                            proximidade_mar=valores_convertidos['proximidadeMar']))
+engine.declare(Eolica(velocidade_vento=valores_convertidos['velocidadeVento']))
+engine.declare(Solar(latitude=valores_convertidos['latitude']))
+engine.declare(Hidrica(area_reservatorio=valores_convertidos['area']))
+engine.declare(Geotermica(temperatura_subterranea=valores_convertidos['temperaturaInterna']))
 # por fim, o motor é executado
 engine.run()
