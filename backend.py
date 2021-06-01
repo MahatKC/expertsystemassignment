@@ -13,6 +13,14 @@ valores_convertidos = {
     'temperaturaInterna': float(interface.valores['temperaturaInterna'])
 }
 
+viabilidade = {
+    'maremotriz': False,
+    'eolica': False,
+    'solar': False,
+    'geotermica': False,
+    'hidrica': False
+}
+
 #então, criaremos os fatos utilizado para as regras do SE
 #no Experta, cada fato é um classe individual com parâmetros próprios
 #criaremos um fato distinto para cada possível fonte energética de nosso problema
@@ -57,22 +65,27 @@ class AnaliseViabilidade(KnowledgeEngine):
     @Rule(Maremotriz(diferenca_mare=P(lambda d: d>=7),proximidade_mar=P(lambda p: p<=2)))
     def regra_maremotriz(self):
         print("Maremotriz é top")
+        viabilidade['maremotriz'] = True
 
     @Rule(Eolica(velocidade_vento=P(lambda v: v>25)))
     def regra_eolica(self):
         print("Eolica é top")
+        viabilidade['eolica'] = True
 
     @Rule(Solar(latitude=P(lambda y: abs(y)<50)))
     def regra_solar(self):
         print("Solar é top")
+        viabilidade['solar'] = True
 
     @Rule(Geotermica(temperatura_subterranea=P(lambda t: t>150)))
     def regra_geotermica(self):
         print("Geotermica é top")
+        viabilidade['geotermica'] = True
 
     @Rule(Hidrica(area_reservatorio=P(lambda a: a>3.0)))
     def regra_hidrica(self):
         print("Hidrica é top")
+        viabilidade['hidrica'] = True
 
 # após declarar o motor, as regras e os fatos, é preciso instanciá-los
 engine = AnaliseViabilidade()
@@ -87,3 +100,5 @@ engine.declare(Hidrica(area_reservatorio=valores_convertidos['area']))
 engine.declare(Geotermica(temperatura_subterranea=valores_convertidos['temperaturaInterna']))
 # por fim, o motor é executado
 engine.run()
+
+print(viabilidade)
