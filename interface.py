@@ -9,14 +9,15 @@ layout = [   #definicao da aparencia da interface junto com o conteudo que sera 
     [sg.Text('Velocidade do vento (Km/h)              '), sg.Input(key='velocidadeVento', text_color='#DADA3E', size=(15, None))],
     [sg.Text('Latitude (notação decimal)'), 
     sg.Image('help-circle.png', tooltip=ajudaLatitude), # botao de interrogacao que aparece uma mensagem ao deixar o mouse em cima
-    sg.Input(key='latitude', text_color='#DADA3E', size=(15, None))],
-    [sg.Text('Área para reservatório (m2)              '), sg.Input(key='area', text_color='#DADA3E', size=(15, None))],
-    [sg.Text('Temperatura no interior da terra (°C) '), sg.Input(key='temperaturaInterna', text_color='#DADA3E', size=(15, None))],
+    sg.Text('      '), sg.Input(key='latitude', text_color='#DADA3E', size=(15, None))],
+    [sg.Text('Área para reservatório (m2)               '), sg.Input(key='area', text_color='#DADA3E', size=(15, None))],
+    [sg.Text('Temperatura no interior da terra (°C)  '), sg.Input(key='temperaturaInterna', text_color='#DADA3E', size=(15, None))],
+    [sg.Text('    ')],#espaco para proposito estetico/linha em branco
     [sg.Button('Enviar dados', pad=(100, 0), button_color='#DADA3E', size=(18, None))]
 ]
 
 
-janela = sg.Window('Implantação de fontes energéticas', layout) #titulo do janela
+janela = sg.Window('Implantação de Fontes Energéticas', layout) #titulo do janela
 
 while True:
     eventos, valores = janela.read()
