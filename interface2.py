@@ -1,13 +1,33 @@
 from tkinter.constants import BOTTOM, CENTER
 from webbrowser import BackgroundBrowser
 from PySimpleGUI import PySimpleGUI as sg
+import backend
+
+if backend.viabilidade['maremotriz']:
+    maremotriz_img='maremotriz.png'
+    maremotriz_bg='#355167'
+    maremotriz_title_color='#DADA3E'
+else:
+    maremotriz_img='maremotrizbw.png'
+    maremotriz_bg='#A9A9A9'
+    maremotriz_title_color='#000000'
+
+if backend.viabilidade['maremotriz']:
+    maremotriz_img='maremotriz.png'
+    maremotriz_bg='#355167'
+    maremotriz_title_color='#DADA3E'
+else:
+    maremotriz_img='maremotrizbw.png'
+    maremotriz_bg='#A9A9A9'
+    maremotriz_title_color='#000000'
+
 
 sg.theme('DarkBlue2')
 layout=[
     [sg.Text('                       Abaixo, as fontes energéticas em destaque são viáveis para a sua propriedade:', font=('arial',16))],
      [sg.Frame(layout=[   
          [sg.Text('   ',background_color='#A9A9A9')],   
-         [sg.Text('   ',background_color='#A9A9A9'),sg.Image('eolica.png'),sg.Text('   ',background_color='#A9A9A9')]
+         [sg.Text('   ',background_color='#A9A9A9'),sg.Image('eolicabw.png'),sg.Text('   ',background_color='#A9A9A9')]
      ], title='Eólica\n',title_color='#000000', font=('arial',20),border_width=0, background_color='#A9A9A9', title_location=sg.TITLE_LOCATION_BOTTOM, pad=(10,20)), 
      sg.Frame(layout=[   
          [sg.Text('   ',background_color='#355167')],   
