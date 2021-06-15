@@ -21,14 +21,12 @@ else:
     eolica_bg='#A9A9A9'
     eolica_title_color='#000000'
 
-if backend.viabilidade['solar']:
-    fotovoltaica_img='fotovoltaica.png'
-    fotovoltaica_bg='#355167'
-    fotovoltaica_title_color='#DADA3E'
-else:
-    fotovoltaica_img='fotovoltaicabw.png'
-    fotovoltaica_bg='#A9A9A9'
-    fotovoltaica_title_color='#000000'
+fotovoltaica_img='fotovoltaica.png'
+fotovoltaica_bg='#355167'
+fotovoltaica_title_color='#DADA3E'
+
+if not backend.viabilidade['solar']:
+    #PREPARA O POPUP AQUI
 
 if backend.viabilidade['geotermica']:
     geotermica_img='geotermica.png'
